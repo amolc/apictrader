@@ -268,12 +268,10 @@ class FIX:
                 break
             try:
                 self.qstream.write(data)
-                print(self.qstream)
                 self.parse_quote_message()
             except Exception as e:
                 logging.info(f"Market is Close or Disconnected {e}")
                 import traceback
-                print(traceback.format_exc())
                 break
 
     def tworker(self):
@@ -291,27 +289,23 @@ class FIX:
                 self.parse_trade_message()
             except Exception as e:
                 logging.info(f"Market is Close or Logged out {e}")
+                import traceback
+                logging.info(f"TraceBack{traceback.format_exc()}")
                 break
 
     def parse_quote_message(self):
         while len(self.qstream) > 0:
             match = re.search(rb"10=\d{3}\x01", self.qstream.peek(self.qstream.count()))
-            print("======match=====", match)
             if match:
                 msg = FIX.Message()
-                print("======msg=====", msg)
                 data = self.qstream.read(match.span()[1]).split(b"\x01")[:-1]
-                print("======data=====", data)
                 for part in data:
-                    print("======part=====", part)
                     tag, value = part.split(b"=", 1)
-                    print("======tag=====", tag)
-                    print("======value=====", value)
+      
                     msg[Field(int(tag.decode()))] = value.decode()
                 logging.debug("\033[32mRECV <<< %s\033[0m" % msg)
                 self.process_message(msg)
             else:
-                # print("======match=====", match)
                 break
 
     def parse_trade_message(self):
@@ -352,11 +346,8 @@ class FIX:
             self.theartbeat(msg[Field.TestReqID])
 
     def process_logout(self, msg):
-        print("=process_logout===", msg)
         if not msg[Field.Text]:
-            print("=False===")
             self.logged = False
-        print("=self.logged===", self.logged)
         self.update_fix_status(self.client_id, self.logged)
 
     def process_exec_report(self, msg):
@@ -543,18 +534,19 @@ class FIX:
     }
 
     def process_message(self, msg: Message):
-        print("===process_message=========", msg)
         msg_type = msg[Field.MsgType]
-        print("===msg_type=========", msg_type)
         FIX.message_dispatch[msg_type](self, msg)
        
 
     def send_message(self, msg: Message):
         if msg[Field.TargetSubID] == SubID.QUOTE:
+           
             try:
                 self.qs.send(bytes(msg))
                 logging.debug("\033[36mSEND >>> %s\033[0m" % msg)
+                print("====msg===1=",  msg)
             except Exception as e:
+                
                 logging.debug(f"QUOTE send error: {e}. client_id: {self.client_id}")
                 self.qs.close()
         elif msg[Field.TargetSubID] == SubID.TRADE:
@@ -643,6 +635,7 @@ class FIX:
 
     def spot_market_request(self, symbol):
         msg = FIX.Message(SubID.QUOTE, "V", self)
+        # msg = FIX.Message(SubID.TRADE, "V", self)
         msg[Field.MDReqID] = self.client_id
         msg[Field.SubscriptionRequestType] = 1
         msg[Field.MarketDepth] = 1
@@ -652,6 +645,7 @@ class FIX:
         msg[Field.NoRelatedSym] = 1
         msg[Field.Symbol] = self.sec_name_table[symbol]["id"]
         self.spot_request_list.add(symbol)
+        print(msg)
         self.send_message(msg)
 
     def position_request(self):

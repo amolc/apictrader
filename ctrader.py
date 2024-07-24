@@ -19,7 +19,7 @@ class Ctrader:
         currency="EUR",
         client_id=1,
         spread=0.00005,
-        debug=False,
+        debug=True,
     ):
         try:
             """AI is creating summary for __init__
@@ -33,13 +33,9 @@ class Ctrader:
             """
             if debug:
                 logging.getLogger().setLevel(logging.INFO)
-            print("========here===")
             split_string = account.split(".")
-            print("========split_string===", split_string)
             broker = split_string[0] + "." + split_string[1]
-            print("========broker===", broker)
             login = split_string[2]
-            print("========login===", login)
 
             self.client = c = {
                 "_id": client_id,
@@ -52,8 +48,6 @@ class Ctrader:
                 "positions": [],
                 "orders": [],
             }
-            print("========self.client ===", self.client )
-            print("========c ===", c )
             self.fix = FIX(
                 c["server"],
                 c["broker"],
@@ -64,11 +58,8 @@ class Ctrader:
                 self.position_list_callback,
                 self.order_list_callback,
             )
-            print("========self.fix  ===", self.fix  )
             self.market_data_list = {}
-            print("========self.market_data_list  ===", self.market_data_list  )
             self.symbol_table = SYMBOLSLIST["default"]
-            print("========self.symbol_table  ===", self.symbol_table  )
 
         except Exception as e:
             print(e)
