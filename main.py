@@ -1,4 +1,4 @@
-from .ctrader import Ctrader
+from ctrader import Ctrader
 from time import sleep
 
 
@@ -11,7 +11,7 @@ print("server", server)
 print("account", account)
 print("password", password)
 
-api = Ctrader(server,account,password)
+api = Ctrader(server,account,password, "HK50", 1, 0.00005, debug=True)
 print("is struck here 2", api)
 sleep(3)
 
