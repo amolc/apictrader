@@ -16,71 +16,82 @@ api = Ctrader(server,account,password)
 
 sleep(5)
 
-# checkConnection = api.isconnected()
-# print("Is Connected?: ", checkConnection)
-# sleep(1)
 
 
+def check_connection():
+    checkConnection = api.isconnected()
+    print("Is Connected?: ", checkConnection)
+    sleep(1)
 
 
-#---------------------Subscribe to symbols-----------------------#
-
-# symbols = api.subscribe("EURUSD")
-
-# print("symbols:", symbols)
-
-
-#---------------------List of quotes for all symbols----------------------#
-
-
-
-#---------------------Market position and pending orders-----------------------#
-
-# Buy position
-# api.subscribe("EURUSD")
-# sleep(1)
-# price = api.quote()
-# print(price, "priceprice")
-# price = price['EURUSD']['bid'] 
-
-# symbol = "EURUSD"
-# volume = 0.01 # position size:
-# stoploss =  round(price - 0.00010,6)
-# takeprofit = round(price + 0.00010,6)
-# id = api.buy(symbol, volume, stoploss, takeprofit)
-# print(f"Position: {id}")
-
-# sell position 
-# api.subscribe("EURUSD")
-# sleep(1)
-# price = api.quote()
-# print(price, "priceprice")
-# price = price['EURUSD']['bid'] 
+def buy_position(stock):
+    # Buy position
+    api.subscribe(stock)
+    sleep(1)
+    price = api.quote(stock)
+    sleep(1)
+    print(price, "priceprice")
+    price = price['bid'] 
+    print("price", price)
+    sleep(1)
+    symbol = stock
+    volume =7 # position size:
+    stoploss =  round(price - 0.00010,6)
+    takeprofit = round(price + 0.00010,6)
+    # id = api.buyLimit(symbol, volume, price)
+    id = api.buy(symbol, volume, stoploss, takeprofit)
+    print(f"Position: {id}")
 
 
-# symbol = "EURUSD"
-# volume = 0.01 # position size
-# stoploss =  round(price + 0.00010,6)
-# takeprofit = round(price - 0.00010,6)
+def sell_position(stock):
+    try:
+        # Subscribe to the stock
+        api.subscribe("HK50")
+        sleep(1)
 
-# id = api.sell(symbol, volume, stoploss, takeprofit)
-# print(f"Position: {id}")
+        # Get the price
+        price = api.quote('HK50')
+        print(price, "priceprice")
+        
+        if not price or 'bid' not in price:
+            raise ValueError("Failed to retrieve price or bid price not found")
+
+        bid_price = price['bid']
+        print(bid_price, "bid price")
+
+        # Define the trading parameters
+        symbol = "HK50"
+        volume = 7  # Position size
+        stoploss = round(bid_price + 0.00010, 6)
+        takeprofit = round(bid_price - 0.00010, 6)
+
+        # Place a sell order
+        id = api.sell(symbol, volume, stoploss, takeprofit)
+        print(f"Position: {id}")
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
 #---------------------List Positions-----------------------#
-
-positions = api.positions()
-print(positions)
+def list_all_position():
+    positions = api.positions()
+    print(positions)
 
 
 #---------------------Close position by id-----------------------#
+def close_position_by_id():
+        # close = api.positionCloseById(pos_id, amount)
+        # print("close:", close)
+        positions = api.positions()
+        print(positions)
 
-for position in positions:
-    api.positionCloseById(position['pos_id'], position['amount'])
-
+        for position in positions:
+            close = api.positionCloseById(position['pos_id'], position['amount'])
+        print(positions)    
 #---------------------Close all positions-----------------------#
-
-# api.close_all()
-
+def close_position_all():
+    close_all = api.close_all()
+    print("close_all:", close_all)
 
 #---------------------Parcial Close position-----------------------#
 
@@ -91,3 +102,10 @@ for position in positions:
 # api logout
 # logout = api.logout()
 # print("Is logout?: ", logout)
+
+
+# buy_position('HK50')
+# sell_position(None)
+# list_all_position()  
+close_position_by_id()
+# close_position_all()

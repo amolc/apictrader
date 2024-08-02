@@ -16,7 +16,7 @@ class Ctrader:
         server=None,
         account=None,
         password=None,
-        currency="EUR",
+        currency="USD",
         client_id=1,
         spread=0.00005,
         debug=True,
@@ -80,12 +80,15 @@ class Ctrader:
     ):
         v_action = action
         v_symbol = symbol
+    
         v_ticket = (
             id
             if id
             else "{:.7f}".format(time.time()).replace(".", "")
             + str(random.randint(10000, 99999))
         )
+        
+            
         v_type = str(type)
         v_openprice = price
         v_lots = volume
@@ -106,7 +109,7 @@ class Ctrader:
 
         otype = actionType
         symbol = v_symbol[:6]
-        size = int(float(v_lots) * 100000)
+        size = int(float(v_lots * 100000)) #  
         global ticket
         ticket = None
         client_id = str(self.client["_id"])
@@ -208,6 +211,7 @@ class Ctrader:
         Returns:
             [int]: [Order ID]
         """
+
         return self.trade(
             symbol,
             "OPEN",
@@ -320,7 +324,7 @@ class Ctrader:
         try:
             action = self.trade("", "CLOSED", 0, "", amount / 100000, 0, 0, 0, 5, id)
         except Exception as e:
-            logging.info(e)
+            logging.info("error",e)
             action = None
             pass
         return action

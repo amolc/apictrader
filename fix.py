@@ -544,7 +544,6 @@ class FIX:
             try:
                 self.qs.send(bytes(msg))
                 logging.debug("\033[36mSEND >>> %s\033[0m" % msg)
-                print("====msg===1=",  msg)
             except Exception as e:
                 
                 logging.debug(f"QUOTE send error: {e}. client_id: {self.client_id}")
