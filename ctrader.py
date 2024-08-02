@@ -178,8 +178,7 @@ class Ctrader:
 
     def positions(self):
         # return json.loads(json.dumps(self.client["positions"]))
-        for data in self.fix:
-            print(data)
+        # Define the position_list_callback to handle position list updates
         return self.fix
       
     
