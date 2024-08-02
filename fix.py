@@ -290,7 +290,7 @@ class FIX:
             except Exception as e:
                 logging.info(f"Market is Close or Logged out {e}")
                 import traceback
-                logging.info(f"TraceBack{traceback.format_exc()}")
+                # logging.info(f"TraceBack{traceback.format_exc()}")
                 break
 
     def parse_quote_message(self):
@@ -346,8 +346,11 @@ class FIX:
             self.theartbeat(msg[Field.TestReqID])
 
     def process_logout(self, msg):
+        # print("msg",msg)
         if not msg[Field.Text]:
             self.logged = False
+        print("self.client_id",self.client_id)
+        print("self.logged",self.logged)
         self.update_fix_status(self.client_id, self.logged)
 
     def process_exec_report(self, msg):
@@ -416,10 +419,12 @@ class FIX:
         if not msg[Field.MDEntryID] and msg[Field.NoMDEntries] != "0":
             self.spot_price_list[name] = {}
             for e in entries:
+                # print(e)
                 self.spot_price_list[name]["time"] = int(round(time.time() * 1000))
                 self.spot_price_list[name][
                     "bid" if e[Field.MDEntryType] == "0" else "ask"
                 ] = float(e[Field.MDEntryPx])
+            # print(self.spot_price_list)
             self.position_list_callback(
                 self.position_list, self.spot_price_list, self.client_id
             )
@@ -538,25 +543,44 @@ class FIX:
         FIX.message_dispatch[msg_type](self, msg)
        
 
+    # def send_message(self, msg: Message):
+    #     if msg[Field.TargetSubID] == SubID.QUOTE:
+    #         try:
+    #             self.qs.send(bytes(msg))
+    #             logging.debug("\033[36mSEND >>> %s\033[0m" % msg)
+    #         except Exception as e:
+    #             logging.debug(f"QUOTE send error: {e}. client_id: {self.client_id}")
+    #             self.qs.close()
+    #     elif msg[Field.TargetSubID] == SubID.TRADE:
+    #         try:
+    #             self.ts.send(bytes(msg))
+    #             logging.debug("\033[96mSEND >>> %s\033[0m" % msg)
+    #         except Exception as e:
+    #             logging.debug(
+    #                 f"TRADE send error: {e} Closing connection. client_id:{self.client_id}"
+    #             )
+    #             self.ts.close()
+
     def send_message(self, msg: Message):
         if msg[Field.TargetSubID] == SubID.QUOTE:
-           
             try:
                 self.qs.send(bytes(msg))
                 logging.debug("\033[36mSEND >>> %s\033[0m" % msg)
+                # self.qs.close()
             except Exception as e:
-                
                 logging.debug(f"QUOTE send error: {e}. client_id: {self.client_id}")
-                self.qs.close()
+                # self.qs.close()
         elif msg[Field.TargetSubID] == SubID.TRADE:
             try:
                 self.ts.send(bytes(msg))
                 logging.debug("\033[96mSEND >>> %s\033[0m" % msg)
+                # self.ts.close()
             except Exception as e:
                 logging.debug(
                     f"TRADE send error: {e} Closing connection. client_id:{self.client_id}"
                 )
-                self.ts.close()
+                # self.ts.close()
+
 
     def qheartbeat(self, test_id: int = None):
         msg = FIX.Message(SubID.QUOTE, "0", self)
@@ -596,6 +620,7 @@ class FIX:
         self.send_message(msg)
 
     def logout(self):
+        print("599","Logout")
         msg = FIX.Message(SubID.QUOTE, "5", self)
         self.send_message(msg)
         msg = FIX.Message(SubID.TRADE, "5", self)

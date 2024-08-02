@@ -111,16 +111,16 @@ def buy_position(stock):
 #     print(positions)
 
 
-# #---------------------Close position by id-----------------------#
-# def close_position_by_id():
-#         # close = api.positionCloseById(pos_id, amount)
-#         # print("close:", close)
-#         positions = api.positions()
-#         print(positions)
+#---------------------Close position by id-----------------------#
+def close_position_by_id():
+        # close = api.positionCloseById(pos_id, amount)
+        # print("close:", close)
+        positions = api.positions()
+        print(positions)
 
-#         for position in positions:
-#             close = api.positionCloseById(position['pos_id'], position['amount'])
-#         print(positions)    
+        # for position in positions:
+        #     close = api.positionCloseById(position['pos_id'], position['amount'])
+        # print(positions)    
 # #---------------------Close all positions-----------------------#
 # def close_position_all():
 #     close_all = api.close_all()
@@ -136,10 +136,10 @@ def buy_position(stock):
 # logout = api.logout()
 # print("Is logout?: ", logout)
 
-check_connection("HK50")
+# check_connection("HK50")
 # list_all_position()  
 # buy_position('HK50')
 # sell_position(None)
 # list_all_position()  
-# close_position_by_id()
+close_position_by_id()
 # close_position_all()
