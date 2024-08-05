@@ -29,7 +29,7 @@ def check_connection(stock):
     sleep(1)
     # print("price",price)
     if stock in prices:
-        price_info = prices["HK50"]
+        price_info = prices["XAUUSD"]
         print(price_info)
     bidprice = price_info['bid'] 
     print("bidprice", bidprice)
@@ -40,7 +40,7 @@ def check_connection(stock):
     takeprofit = round(bidprice + 0.00010,6)
     # id = api.buyLimit(symbol, volume, bidprice)
     id = api.buy(symbol, volume, stoploss, takeprofit)
-    # print(f"Position: {id}")
+    print(f"Position: {id}")
 
 
 
@@ -106,25 +106,24 @@ def buy_position(stock):
 #         print(f"An error occurred: {e}")
 
 # #---------------------List Positions-----------------------#
-# def list_all_position():
-#     positions = api.positions()
-#     print(positions)
+def list_all_position():
+    positions = api.positions()
+    print(positions)
 
 
 # #---------------------Close position by id-----------------------#
-# def close_position_by_id():
-#         # close = api.positionCloseById(pos_id, amount)
-#         # print("close:", close)
-#         positions = api.positions()
-#         print(positions)
-
-#         for position in positions:
-#             close = api.positionCloseById(position['pos_id'], position['amount'])
-#         print(positions)    
+def close_position_by_id(pos_id, amount):
+        # close = api.positionCloseById(pos_id, amount)
+        # print("close:", close)
+        # positions = api.positions()
+        # print(positions)
+        # for position in positions:
+        close = api.positionCloseById(pos_id, amount)
+        print(close)    
 # #---------------------Close all positions-----------------------#
-# def close_position_all():
-#     close_all = api.close_all()
-#     print("close_all:", close_all)
+def close_position_all():
+    close_all = api.close_all()
+    print("close_all:", close_all)
 
 #---------------------Parcial Close position-----------------------#
 
@@ -136,10 +135,15 @@ def buy_position(stock):
 # logout = api.logout()
 # print("Is logout?: ", logout)
 
-check_connection("HK50")
-# list_all_position()  
+# check_connection("XAUUSD")
+list_all_position()  
 # buy_position('HK50')
 # sell_position(None)
 # list_all_position()  
-# close_position_by_id()
+close_position_by_id()
 # close_position_all()
+
+
+{'133629957': {'pos_id': '133629957', 'name': 'XAUUSD', 'long': 7.0, 'short': 0.0, 'price': 2384.19, 'digits': 2, 'clid': None}, 
+ '133629326': {'pos_id': '133629326', 'name': 'XAUUSD', 'long': 7.0, 'short': 0.0, 'price': 2389.65, 'digits': 2, 'clid': None},
+'133628857': {'pos_id': '133628857', 'name': 'HK50', 'long': 7.0, 'short': 0.0, 'price': 16648.8, 'digits': 1, 'clid': None, 'convert': 'USDK50', 'convert_dir': 1}}

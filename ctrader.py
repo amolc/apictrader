@@ -32,7 +32,7 @@ class Ctrader:
                 password ([str]): [example 12345678 need to setup when you create api on ctrader platform]
             """
             if debug:
-                logging.getLogger().setLevel(logging.INFO)
+                logging.getLogger().setLevel(logging.DEBUG)
             split_string = account.split(".")
             broker = split_string[0] + "." + split_string[1]
             login = split_string[2]
@@ -67,6 +67,7 @@ class Ctrader:
 
 
     def position_list_callback(self, data: dict, price_data: dict, client_id: str):
+        print("position_list_callback----", data)
         positions = []
         for i, kv in enumerate(data.items()):
             pos_id = kv[0]
@@ -177,9 +178,9 @@ class Ctrader:
     
 
     def positions(self):
-        # return json.loads(json.dumps(self.client["positions"]))
+        return json.loads(json.dumps(self.client["positions"]))
         # Define the position_list_callback to handle position list updates
-        return self.fix
+        # return self.fix
       
     
     def subscribe(self, *symbol):
@@ -322,7 +323,7 @@ class Ctrader:
                         )
                         self.parse_command(command, client_id)
 
-        elif v_action in ["CLOSED", "PCLOSED"]:
+        elif v_action == "CLOSED":
             if int(v_type) > 1:
                 # ORDEM
                 # cancela ordens pendentes
@@ -406,9 +407,14 @@ class Ctrader:
     
     def positionCloseById(self, id, amount):
         try:
-            action = self.trade("", "CLOSED", 0, "", amount / 100000, 0, 0, 0, 5, id)
+                                
+            action = self.trade("", "CLOSED", 0, 0, amount,  0,   0, 0, 5, id)
         except Exception as e:
             logging.info("error",e)
             action = None
             pass
         return action
+    
+
+    def close_all(self):
+        self.fix.close_all()

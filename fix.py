@@ -354,6 +354,7 @@ class FIX:
         self.update_fix_status(self.client_id, self.logged)
 
     def process_exec_report(self, msg):
+        print("---------> process_exec_report msg", msg)
         if msg[Field.ExecType] == "F":
             self.position_list = {}
             self.position_request()
@@ -712,10 +713,11 @@ class FIX:
         self.send_message(msg)
 
     def close_position(self, pos_id: str, lots):
-        if pos_id not in self.position_list:
-            return
+        # if pos_id not in self.position_list:
+        #     return
 
         # remove referencia ao server ord_id da tabela de-para
+        print("line720",self.origin_to_pos_id.items())
         for o, p in self.origin_to_pos_id.items():
             if p == pos_id:
                 # cancela ordens de TP e SL se existirem
@@ -748,6 +750,7 @@ class FIX:
         self.send_message(msg)
 
     def close_all(self):
+        print("close all positions",self.position_list)
         for position in self.position_list:
             self.close_position(position, None)
 

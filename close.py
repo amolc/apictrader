@@ -118,13 +118,13 @@ def close_position_by_id():
         positions = api.positions()
         print(positions)
 
-        # for position in positions:
-        #     close = api.positionCloseById(position['pos_id'], position['amount'])
-        # print(positions)    
+        for position in positions:
+            close = api.positionCloseById(position['pos_id'], position['amount'])
+        print(positions)    
 # #---------------------Close all positions-----------------------#
-# def close_position_all():
-#     close_all = api.close_all()
-#     print("close_all:", close_all)
+def close_position_all():
+    close_all = api.close_all()
+    print("close_all:", close_all)
 
 #---------------------Parcial Close position-----------------------#
 
@@ -141,5 +141,5 @@ def close_position_by_id():
 # buy_position('HK50')
 # sell_position(None)
 # list_all_position()  
-close_position_by_id()
-# close_position_all()
+# close_position_by_id()
+close_position_all()

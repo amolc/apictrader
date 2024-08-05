@@ -4,12 +4,30 @@ from fix import FIX, Side, OrderType
 import logging
 import time
 
+
 # Define the position_list_callback to handle position list updates
-def position_list_callback(position_list, spot_price_list, client_id):
-    # This function will be called with updated position lists
-    print(f"Updated position list for client {client_id}:")
-    for pos_id, position in position_list.items():
-        print(f"Position ID: {pos_id}, Details: {position}")
+def position_list_callback(data: dict, price_data: dict, client_id: str):
+        print(data.items())
+        positions = []
+        for i, kv in enumerate(data.items()):
+            pos_id = kv[1]
+            name = kv[1]["name"]
+            long = kv[1]["long"]
+            short = kv[1]["short"]
+            price = kv[1]["price"]
+
+            # adiciona informacoes de posicoes no client
+            positions.append(
+                {
+                    "pos_id": pos_id,
+                    "name": name,
+                    "side": long,
+                    "amount": short,
+                    "price": price,
+                }
+            )
+        self.client.update(positions=positions)
+        logging.debug("client_id %s positions: %s", client_id, positions)
 
 # Define a dummy order_list_callback as it is required by the FIX class but not used in this context
 def order_list_callback(order_list, spot_price_list, client_id):
