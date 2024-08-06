@@ -140,7 +140,7 @@ list_all_position()
 # buy_position('HK50')
 # sell_position(None)
 # list_all_position()  
-close_position_by_id()
+# close_position_by_id()
 # close_position_all()
 
 

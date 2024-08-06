@@ -118,7 +118,9 @@ class Ctrader:
                     "gain": gain_str,
                 }
             )
+        print(positions, "====")
         self.client.update(positions=positions)
+        print(self.client['positions'], "====")
         logging.debug("client_id %s positions: %s", client_id, positions)
 
 
@@ -178,6 +180,7 @@ class Ctrader:
     
 
     def positions(self):
+        print(self.client["positions"])
         return json.loads(json.dumps(self.client["positions"]))
         # Define the position_list_callback to handle position list updates
         # return self.fix
@@ -239,6 +242,7 @@ class Ctrader:
         deviation,
         id,
     ):
+        print('id', id)
         v_action = action
         v_symbol = symbol
     
@@ -248,7 +252,7 @@ class Ctrader:
             else "{:.7f}".format(time.time()).replace(".", "")
             + str(random.randint(10000, 99999))
         )
-        
+        print('v_ticket', v_ticket)
             
         v_type = str(type)
         v_openprice = price
@@ -324,22 +328,24 @@ class Ctrader:
                         self.parse_command(command, client_id)
 
         elif v_action == "CLOSED":
-            if int(v_type) > 1:
-                # ORDEM
-                # cancela ordens pendentes
-                self.fix.cancel_order(v_ticket)
-                ticket_orders = self.getOrdersIdByOriginId(v_ticket, client_id)
-                self.cancelOrdersByOriginId(ticket_orders, client_id)
-                self.parse_command(command, client_id)
-                return
-            else:
+            # if int(v_type) > 1:
+            #     # ORDEM
+            #     # cancela ordens pendentes
+            #     self.fix.cancel_order(v_ticket)
+            #     ticket_orders = self.getOrdersIdByOriginId(v_ticket, client_id)
+            #     self.cancelOrdersByOriginId(ticket_orders, client_id)
+            #     self.parse_command(command, client_id)
+            #     return
+            # else:
                 # POSICAO
-                self.fix.close_position(v_ticket, size)
-                # cancela ordens pendentes abertas de TP e SL
-                ticket_orders = self.getOrdersIdByOriginId(v_ticket, client_id)
-                self.cancelOrdersByOriginId(ticket_orders, client_id)
-                self.parse_command(command, client_id)
-                return
+            print("=v_ticket====", v_ticket)
+            print("===size==", size)
+            self.fix.close_position(v_ticket, size)
+            # cancela ordens pendentes abertas de TP e SL
+            ticket_orders = self.getOrdersIdByOriginId(v_ticket, client_id)
+            self.cancelOrdersByOriginId(ticket_orders, client_id)
+            self.parse_command(command, client_id)
+            return
 
         return v_ticket
     
@@ -410,7 +416,7 @@ class Ctrader:
                                 
             action = self.trade("", "CLOSED", 0, 0, amount,  0,   0, 0, 5, id)
         except Exception as e:
-            logging.info("error",e)
+            logging.info("error",e, 'traceback', traceback.format_exc())
             action = None
             pass
         return action

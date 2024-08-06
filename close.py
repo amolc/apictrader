@@ -48,26 +48,30 @@ def check_connection(stock):
 
 #---------------------List Positions-----------------------#
 def list_all_position():
+
+    api.logout()
+    sleep(3)
+
     positions = api.positions()
-    print(positions)
+    print("positions=========",positions, "===positions==")
 
 def buy_position(stock):
-    # Buy position
+    print(stock, "===stock==")
     api.subscribe(stock)
-    sleep(1)
+    sleep(3)
     price = api.quote(stock)
-    sleep(1)
-    print(price, "priceprice")
-    price = price['bid'] 
-    print("price", price)
+    sleep(3)
+    # print("============",price, "priceprice")
+    bid_price = price[stock]['bid'] 
+    print("bid_price", bid_price)
     sleep(1)
     symbol = stock
     volume =7 # position size:
-    stoploss =  round(price - 0.00010,6)
-    takeprofit = round(price + 0.00010,6)
+    stoploss =  round(bid_price - 0.00010,6)
+    takeprofit = round(bid_price + 0.00010,6)
     # id = api.buyLimit(symbol, volume, price)
     id = api.buy(symbol, volume, stoploss, takeprofit)
-    print(f"Position: {id}")
+    print(f"=====================response: {id}===================")
     positions = api.positions()
     print(positions)
 
@@ -116,7 +120,7 @@ def close_position_by_id():
         # close = api.positionCloseById(pos_id, amount)
         # print("close:", close)
         positions = api.positions()
-        print(positions)
+        print(positions, "==position response===")
 
         for position in positions:
             close = api.positionCloseById(position['pos_id'], position['amount'])
@@ -137,9 +141,9 @@ def close_position_all():
 # print("Is logout?: ", logout)
 
 # check_connection("HK50")
-# list_all_position()  
-# buy_position('HK50')
+list_all_position()  
+# buy_position('NAS100')
 # sell_position(None)
 # list_all_position()  
 # close_position_by_id()
-close_position_all()
+# close_position_all()
